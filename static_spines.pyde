@@ -3,33 +3,35 @@ from spine_class import SpinePoint
 import spine_math
 # the copy function already exists in processing, cpalias prevents namespace trampling
 from copy import copy as cpalias
+from config import Config
+config = Config()
 
 # need to try higher bases than 2.
 # need to figure out the translational properties of each spiney thing
+"""
+Todos:
+1. Add a simple config file.
+2. Add a better way to alternate between different functions.
+"""
 
-
-scale = 9
 drawn_nodes = set()
 drawn_nodes_l = list()
-low = 0
-color_inc = 360 / 18
-color_val = 0
-color_val -= color_inc
+
+# defines large color_space to be the same as the HSL standard
+# no reason to change this
+color_space = 360
+color_inc = color_space / config.num_colors
+# set the starting color value
+color_val = 0 - color_inc
+
 high = 0
-width = 1100
-height = 1000
-prev_prime = 0
+low = 0
 
 def setup():
-    global radius
-    colorMode(HSB, 360, 100, 100, 100)
-    size(width, height)
-    background(0, 0, 100)
-    noStroke()
-    c = color(0, 0, 0, 80)
-    fill(c)
-    #ellipse(width / 2, height / 2, 5, 5) #starting center_point
-    frameRate(5)
+    colorMode(HSB, color_space, 100, 100, 1.0)
+    size(config.canvas_width, config.canvas_height)
+    background(10, 10, 100)
+    frameRate(config.frame_rate)
 
 
 def draw():
@@ -40,17 +42,10 @@ prev_prime = 0
 
 class Data():
     largest_order = 0
-    base = 2
-    center_x = width / 2
-    center_y = height / 2
+    base = config.base
+    center_x = config.canvas_width / 2
+    center_y = config.canvas_height / 2
     nodes = []
-
-# def keyReleased():
-#     i = 0
-#     while i < 21:
-#         go()
-#         print(i)
-#         i+=1
 
 def keyReleased():
     global high
@@ -62,11 +57,11 @@ def keyReleased():
     global color_inc
     global prev_prime
 
-    prime_gap = True
+    prime_gap = config.prime_gap
 
     prime_count = 0
     colorme = color(color_val, 70, 80, 100)
-    #print(i)
+
     low, high = spine_math.yield_next_range(high)
     for n in range(low, high):
         node = SpinePoint(n, colorme)
@@ -75,8 +70,7 @@ def keyReleased():
     prev_node = None
     if prime_gap:
         for node in Data.nodes:
-            # the prime gap finder, can be turned off
-            draw_spines(node, width/2.3, True)
+            draw_spines(node, config.canvas_width/2.3)
             if prev_node:
                 connect_nodes(prev_node, node)
                 pass
@@ -88,7 +82,7 @@ def keyReleased():
                 background(0, 0, 100)
             else:
                 prev_node = node
-            # print(node.number)
+
 
     else:
         background(0,0,100)
@@ -127,7 +121,7 @@ def draw_nodes(node):
         # plot_it(node, 0, height)
         return False
 
-def draw_spines(node, len_spine, write_t = False):
+def draw_spines(node, len_spine):
 
     # draw_shadows(node, node.number)
 
@@ -138,7 +132,7 @@ def draw_spines(node, len_spine, write_t = False):
     line(Data.center_x, Data.center_y, x-2, y-2)
     node.x = x
     node.y = y
-    if write_t:
+    if config.write_text:
         write_text(node, x, y + 2)
 
 def calc_offset(node1, node2, changeval = 50):
@@ -179,13 +173,19 @@ def connect_nodes(node1, node2, offset=False):
     ellipse(node2.x, node2.y, 5, 5)
 
 def draw_shadows(node, len_r = 50, auto_shadow_len = False):
+    """
+    this function can be used to draw shadows on the spines.
+    These are not sophisticated shadows, but they can add a certain depth
+    when done right.
+    """
     if auto_shadow_len:
         numer, denom = get_updated_numer_and_denom(node)
         len_r = (denom / (node.number+1))
+
     x, y = final_x_y_coords(node, len_r)
-    strokeWeight(2) #for shadows
-    stroke(0, 0, 0, 20) #for shadows
-    line(Data.center_x, Data.center_y, x-4, y+4) #for shadows
+    strokeWeight(2)
+    stroke(0, 0, 0, 20)
+    line(Data.center_x, Data.center_y, x-4, y+4)
 
 def write_text(node, x, y, display_fraction = True):
     fill(1, 1, 0)
@@ -193,8 +193,8 @@ def write_text(node, x, y, display_fraction = True):
     text(node.number, x+3, y-3)
     low, high = spine_math.yield_next_range((Data.base**Data.largest_order)-1)
     node.update_fraction(high)
-    # print(Data.base**Data.largest_n-1, high)
-    if display_fraction:
+
+    if config.write_fraction:
         text(node.display_fraction, x + 15, y+5)
 
 def get_updated_numer_and_denom(node):
@@ -204,25 +204,32 @@ def get_updated_numer_and_denom(node):
 
     return numer, denom
 
-def plot_it(node, y_top, y_height, bool_val=False):
+def plot_it(node, y_top, y_height, no_stroke=False):
 
     x_left = 10
-    y_bottom = y_top + y_height - 30 # last variable just used for bottom padding
-    x_inc = 5 # tell us how much to move by for expansionary version
-    y_inc = 5
+    y_bottom = y_top + y_height - 30 # last value just used for bottom padding
 
     numer, denom = get_updated_numer_and_denom(node)
     fraction = numer / denom
 
     stroke(node.colorme)
     strokeWeight(5)
-    g = color(0, 0, 0, 80)
-    fill(g)
-    #bool_val is an optional condition that can be passed in to do variable formatting
-    if bool_val == False:
+    dot_color = color(0, 0, 0, 80)
+    fill(dot_color)
+
+    # no_stroke is an optional condition that can be passed in to do variable formatting
+    if no_stroke == False:
+        # remove outlines
         noStroke()
-    # write_text(node, x_left + (x_inc * numer) +2, y_bottom - (y_inc * node.number) -2)
-    # ellipse(x_left + (x_inc * numer), y_bottom - (y_inc * node.number), 5, 5) # expansionary version
+
+    if config.expansionary_plot:
+        # tell us how much to move by for expansionary version
+        x_inc = 5
+        y_inc = 5
+        ellipse(x_left + (x_inc * numer), y_bottom - (y_inc * node.number), 5, 5) # expansionary version
+        if config.write_text:
+            write_text(node, x_left + (x_inc * numer) + 2, y_bottom - (y_inc * node.number) - 2)
+
     x = fraction*(width-20) + x_left
     y = (node.number/denom)*(y_height-20)+10
     ellipse(x,y, 5, 5 ) # fit screen version
@@ -235,8 +242,8 @@ def final_x_y_coords(node, len_r=1):
     """
     this function takes in the radian input given by node.final_location
     then finds the x and y values for the radians
+    it scales the input by len_r to say how long the radius should be (default is 1)
     it then adds the center_x and center_y values to get away from (0,0) the proper amount
-    finally, it scales the input by len_r to say how long the radius should be (default is 1)
     """
     x = cos(node.final_location) * len_r + Data.center_x
     y = sin(node.final_location) * len_r + Data.center_y
