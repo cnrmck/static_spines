@@ -1,5 +1,5 @@
 from __future__ import division, print_function
-import spine_class
+from spine_class import SpinePoint
 import spine_math
 # the copy function already exists in processing, cpalias prevents namespace trampling
 from copy import copy as cpalias
@@ -67,9 +67,9 @@ def keyReleased():
     prime_count = 0
     colorme = color(color_val, 70, 80, 100)
     #print(i)
-    low, high = spiney.yield_next_range(high)
+    low, high = spine_math.yield_next_range(high)
     for n in range(low, high):
-        node = spine.Spine(n, colorme)
+        node = SpinePoint(n, colorme)
         node.prime = is_prime(node.number)
         Data.nodes.append(node)
     prev_node = None
@@ -120,7 +120,7 @@ def draw_nodes(node):
     # plot_it(node, 0, height) # plot all
     if node.prime:
         draw_spines(node, node.number, False)
-        # plot_it(node, 0, height, True  )
+        # plot_it(node, 0, height, True)
         return True
     else:
         draw_spines(node, node.number, False)
@@ -191,14 +191,14 @@ def write_text(node, x, y, display_fraction = True):
     fill(1, 1, 0)
     textSize(10)
     text(node.number, x+3, y-3)
-    low, high = spiney.yield_next_range((Data.base**Data.largest_order)-1)
+    low, high = spine_math.yield_next_range((Data.base**Data.largest_order)-1)
     node.update_fraction(high)
     # print(Data.base**Data.largest_n-1, high)
     if display_fraction:
         text(node.display_fraction, x + 15, y+5)
 
 def get_updated_numer_and_denom(node):
-    low, high = spiney.yield_next_range((Data.base**Data.largest_order)-1)
+    low, high = spine_math.yield_next_range((Data.base**Data.largest_order)-1)
     node.update_fraction(high)
     numer, denom = node.get_numer_and_denom()
 

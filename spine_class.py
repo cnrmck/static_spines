@@ -1,7 +1,7 @@
 from __future__ import division
 import spine_math
 
-class Spine(object):
+class SpinePoint(object):
     """
     Connor of the future:
     this class is pretty cool, but there are a couple attributes that I would be
@@ -28,7 +28,7 @@ class Spine(object):
 
 
 
-    >>> from spiney import sum_partial_sum
+    >>> from spine_math import sum_partial_sum
 
     >>> s = Spoke(12)
 
@@ -51,8 +51,8 @@ class Spine(object):
     """
     def __init__(self, number, colorme):
         self.number = number
-        self.final_location, self.partial_sums = spiney.gen_point(self.number)
-        self.fractional_location = spiney.sum_partial_sum(self.partial_sums)
+        self.final_location, self.partial_sums = spine_math.gen_point(self.number)
+        self.fractional_location = spine_math.sum_partial_sum(self.partial_sums)
         self.display_fraction = self.fractional_location
         self.colorme = colorme
         self.prime = False
@@ -65,7 +65,7 @@ class Spine(object):
         numerator, denominator = self.get_numer_and_denom()
         # finds the index of the "/" and checks against what comes after it
         if denominator !=  desired_denom:
-            numer, denom = spiney.convert_fraction(numerator, denominator, desired_denom)
+            numer, denom = spine_math.convert_fraction(numerator, denominator, desired_denom)
             self.display_fraction = str(int(numer)) + "/" + str(int(denom))
     def get_numer_and_denom(self):
         try:
