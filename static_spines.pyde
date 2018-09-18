@@ -4,6 +4,7 @@ from spine_class import SpinePoint
 import spine_math
 # the copy function already exists in processing, cpalias prevents namespace trampling
 from copy import copy as cpalias
+import time
 from config import Config
 config = Config()
 
@@ -63,6 +64,7 @@ class Data(object):
 data = Data()
 
 def keyPressed():
+    print("Working...")
     global high
     global low
     global drawn_nodes
@@ -73,6 +75,9 @@ def keyPressed():
     global color_inc
     global prev_prime
     global prev_node
+
+    if key == 's':
+        save(str(time.time()) + ".png")
 
     prime_count = 0
     current_color = color(color_val, 70, 80, 100)
@@ -104,6 +109,7 @@ def keyPressed():
 
     color_val += color_inc
     data.largest_order += 1
+    print("Done")
 
 
                 # if node.isprime:
@@ -135,6 +141,10 @@ def draw_node(prev_node, node):
             connect_nodes(node, prev_node)
         else:
             connect_nodes(prev_node, node)
+
+    if config.write_text and (config.draw_connecting_lines or config.draw_spines):
+        x, y = final_x_y_coords(node)
+        write_text(node, x, y)
 
     if node.isprime:
 
@@ -169,9 +179,6 @@ def draw_spines(node):
 
     x, y = final_x_y_coords(node)
     line(data.center_x, data.center_y, x, y)
-
-    if config.write_text:
-        write_text(node, x, y + 2)
 
 def calc_offset(prev_node, node2, changeval = 50):
     """
@@ -234,9 +241,12 @@ def draw_shadows(node, len_r = 50, auto_shadow_len = False):
     line(data.center_x, data.center_y, x-4, y+4)
 
 def write_text(node, x, y):
+
     fill(1, 1, 0)
     textSize(10)
-    text(node.number, x+3, y-3)
+    if config.write_text is True:
+        text(node.number, x+3, y-3)
+
     low, high = spine_math.yield_next_range((data.base**data.largest_order)-1)
     node.update_fraction(high)
 
@@ -250,39 +260,45 @@ def get_updated_numer_and_denom(node):
 
     return numer, denom
 
-def plot_it(node, no_stroke=True):
-    y_top = 20
-    y_height = config.canvas_height - 30 # last value just used for bottom padding
+def plot_it(node):
+    y_top = data.center_y - config.scale_factor
+    x_left = data.center_x - config.scale_factor
 
-    x_left = 10
+    y_height = config.scale_factor*2
+    x_width = config.scale_factor*2
+
     y_bottom = y_top + y_height
+    x_right = x_left + x_width
 
     numer, denom = get_updated_numer_and_denom(node)
     fraction = numer / denom
 
     stroke(node.current_color)
-    strokeWeight(5)
     dot_color = color(0, 0, 0, 80)
-    fill(dot_color)
 
-    # no_stroke is an optional condition that can be passed in to do variable formatting
-    if no_stroke is True:
-        # remove outlines
+    if config.color_primes is True and node.isprime:
+        strokeWeight(3)
+    else:
         noStroke()
 
-    if config.expansionary_plot is True:
-        # tell us how much to move by for expansionary version
-        x_inc = 5
-        y_inc = 5
-        ellipse(x_left + (x_inc * numer), y_bottom - (y_inc * node.number), 5, 5) # expansionary version
+    fill(dot_color)
 
-    x = fraction*(width-20) + x_left
-    y = (node.number/denom)*(y_height-20)+10
-    ellipse(x,y, 5, 5) # fit screen version
+
+    if config.expansionary_plot is True:
+        expan_inc = config.expansion_increment
+        ellipse(x_left + (expan_inc * numer), y_top
+                + (expan_inc * node.number), 5, 5)
+
+    else:
+        x = fraction*(x_width) + x_left
+        y = (node.number/denom)*(y_height) + y_top
+        ellipse(x, y, 5, 5) # fit screen version
 
     if config.write_text:
         if config.expansionary_plot is True:
-            write_text(node, x_left + (x_inc * numer) + 2, y_bottom - (y_inc * node.number) - 2)
+            # TODO:
+            write_text(node, x_left + (expan_inc * numer), y_top
+                    + (expan_inc * node.number))
         else:
             write_text(node, x + 5, y + 4)
 

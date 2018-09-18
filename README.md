@@ -11,4 +11,4 @@ alias processing='java -jar $PWD/processing-py.jar'
 alias psing='processing'
 ```
 
-If you do so, all you will have to do is run `processing path_to_processing_python_file.pyde` in the directory that contains the processing-py.jar file. You can also use `psing` in place of `processing` if you, like me, are lazy.  
+If you do so, all you will have to do is run `processing static_spines.pyde` in the directory that contains the processing-py.jar file. You can also use `psing` in place of `processing` if you, like me, are lazy.  
