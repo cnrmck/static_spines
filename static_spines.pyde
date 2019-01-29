@@ -36,6 +36,15 @@ high = 0
 low = 0
 prev_node = None
 
+def get_current_color(color_val):
+    """ return the current color based on the color val passed in """
+    return color(color_val, 70, 80, 100)
+# INITIALIZE starting values
+prev_len_nodes = 1
+prev_prime = 0
+# initialize the most_recent_prime_node to prev_prime and whatever the current_color starts as
+most_recent_prime_node = SpinePoint(prev_prime, get_current_color(color_val))
+
 # this has to be the first function that is encountered
 def setup():
     # HSB works as: hue, saturation, brightness, opacity. (HSL would be nicer)
@@ -48,12 +57,6 @@ def setup():
 # this has to be the second function that is encountered
 def draw():
     pass
-
-# INITIALIZE starting values
-prev_len_nodes = 1
-prev_prime = 0
-# initialize the most_recent_prime_node to prev_prime and whatever the current_color starts as
-most_recent_prime_node = SpinePoint(prev_prime, get_current_color(color_val))
 
 class Data(object):
     """
@@ -268,10 +271,6 @@ def draw_nodes(start_node):
 
 def clear_background():
     background(0, 0, 99)
-
-def get_current_color(color_val):
-    """ return the current color based on the color val passed in """
-    return color(color_val, 70, 80, 100)
 
 def keyPressed():
     global low
