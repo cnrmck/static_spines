@@ -42,6 +42,14 @@ class SpinePoint(object):
     '12/64'
     """
     def __init__(self, number, current_color):
+        """
+        initialize all the variables in the SpinePoint class.
+
+        Arguments:
+        number - an integer, e.g. -1, 0, 1, 2, etc.
+        current_color - an integer to indicate the correct color for this number
+        can be returned by calling the processing `color` function
+        """
         self.number = number
         self.current_color = current_color
         self.final_location, self.partial_sums = spine_math.gen_point(self.number)
