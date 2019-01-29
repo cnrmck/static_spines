@@ -227,45 +227,49 @@ def draw_node(prev_node, node):
     prev_node - the node that was drawn before this one
     node - the current node of interest
     """
-    global most_recent_prime_node
+    with sl as l:
+        global most_recent_prime_node
+        l.debug("Most recent prime node is: {}".format(most_recent_prime_node.number))
 
-    if config.cartesian_plot is True:
-        plot_it(node)
+        if config.cartesian_plot is True:
+            plot_it(node)
 
-    if config.spine_length_is_its_number:
-        node.vector_mode = True
-    else:
-        node.vector_mode = False
-
-    if config.draw_spines:
-        draw_spines(node)
-
-    if prev_node and config.draw_connecting_lines:
-        if not config.reverse_display_order:
-            connect_nodes(node, prev_node)
+        if config.spine_length_is_its_number:
+            node.vector_mode = True
         else:
-            connect_nodes(prev_node, node)
+            node.vector_mode = False
 
-    if config.write_text and (config.draw_connecting_lines or config.draw_spines):
-        x, y = final_x_y_coords(node)
-        write_text(node, x, y)
+        if config.draw_spines:
+            draw_spines(node)
 
-    if config.prime_gaps is True and node.isprime is True:
+        if prev_node and config.draw_connecting_lines:
+            if not config.reverse_display_order:
+                connect_nodes(node, prev_node)
+            else:
+                connect_nodes(prev_node, node)
 
-        if config.save_prime_gaps is True:
-            # save the image of the prime gap
-            save(str(config.image_path) + str(most_recent_prime_node.number)
-                + "-" + str(node.number) + ".png")
+        if config.write_text and (config.draw_connecting_lines or config.draw_spines):
+            x, y = final_x_y_coords(node)
+            write_text(node, x, y)
 
-        most_recent_prime_node = node
-        clear_background()
+        if config.prime_gaps is True and node.isprime is True:
 
-    return node
+            if config.save_prime_gaps is True:
+                # save the image of the prime gap
+                save(str(config.image_path) + str(most_recent_prime_node.number)
+                    + "-" + str(node.number) + ".png")
 
-def draw_nodes(start_node):
+            most_recent_prime_node = node
+            clear_background()
+
+        return node
+
+def draw_nodes(start_node, data):
     prev_node = start_node
-    for node in data.nodes:
-        prev_node = draw_node(prev_node, node)
+    with sl as l:
+        for node in data.nodes:
+            l.debug("Drawing node {}".format(node.number))
+            prev_node = draw_node(prev_node, node)
 
     return node
 
@@ -318,14 +322,15 @@ def keyPressed():
                     step = range(low, high)
                     l.debug("Next step is {}-{} with len {}".format(low, high, len(step)))
 
+            l.info("Drawing Nodes")
             with sl as l:
-                for n in step:
-                    node = SpinePoint(n, current_color)
-                    if config.reverse_display_order is False:
+                if config.reverse_display_order is False:
+                    for n in step:
+                        node = SpinePoint(n, current_color)
                         data.nodes.appendleft(node)
 
-                if config.reverse_display_order is False:
-                    prev_node = draw_nodes(prev_node)
+                    l.info("Drawing nodes in reverse up to: {}".format(n))
+                    prev_node = draw_nodes(prev_node, data)
 
             color_val += color_inc
             data.largest_order += 1
