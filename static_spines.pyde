@@ -2,6 +2,7 @@ from __future__ import division, print_function
 
 
 import os
+import sys
 import time
 import logging
 import spine_math
@@ -100,24 +101,27 @@ def calc_offset(prev_node, node2, changeval = 50):
     return node1_offset_x, node1_offset_y
 
 def connect_nodes(start_node, end_node):
-    if config.connections_in_current_color is True:
-        stroke(end_node.current_color)
-    else:
-        stroke(360, 50, 50, 50)
-    strokeWeight(1)
+    with sl as l:
+        l.debug("Connecting node {} to {}".format(start_node.number, end_node.number))
 
-    x1, y1 = final_x_y_coords(start_node)
-    x2, y2 = final_x_y_coords(end_node)
+        if config.connections_in_current_color is True:
+            stroke(end_node.current_color)
+        else:
+            stroke(360, 50, 50, 50)
+        strokeWeight(1)
 
-    if config.offset_connecting_lines is True:
-        # calculate the offset for start_node to make it easier to determine direction
-        prev_node_offset_x, prev_node_offset_y = calc_offset(start_node, end_node)
-        line(prev_node_offset_x, prev_node_offset_y, end_node.x, end_node.y)
-    else:
-        line(x1, y1, x2, y2)
+        x1, y1 = final_x_y_coords(start_node)
+        x2, y2 = final_x_y_coords(end_node)
 
-    if config.draw_nodes:
-        ellipse(x1, y1, 5, 5)
+        if config.offset_connecting_lines is True:
+            # calculate the offset for start_node to make it easier to determine direction
+            prev_node_offset_x, prev_node_offset_y = calc_offset(start_node, end_node)
+            line(prev_node_offset_x, prev_node_offset_y, end_node.x, end_node.y)
+        else:
+            line(x1, y1, x2, y2)
+
+        if config.draw_nodes:
+            ellipse(x1, y1, 5, 5)
 
 def final_x_y_coords(node):
     """
@@ -232,35 +236,42 @@ def draw_node(prev_node, node):
         l.debug("Most recent prime node is: {}".format(most_recent_prime_node.number))
 
         if config.cartesian_plot is True:
-            plot_it(node)
+            with sl as l:
+                l.debug("Cartesian plotting node {}".format(node.number))
+                plot_it(node)
 
         if config.spine_length_is_its_number:
             node.vector_mode = True
         else:
             node.vector_mode = False
 
-        if config.draw_spines:
-            draw_spines(node)
+        with sl as l:
+            if config.draw_spines:
+                l.debug('Drawing spine for node {}'.format(node.number))
+                draw_spines(node)
 
-        if prev_node and config.draw_connecting_lines:
-            if not config.reverse_display_order:
-                connect_nodes(node, prev_node)
-            else:
-                connect_nodes(prev_node, node)
+            if prev_node and config.draw_connecting_lines:
+                if not config.reverse_display_order:
+                    connect_nodes(node, prev_node)
+                else:
+                    connect_nodes(prev_node, node)
 
-        if config.write_text and (config.draw_connecting_lines or config.draw_spines):
-            x, y = final_x_y_coords(node)
-            write_text(node, x, y)
+            if config.write_text and (config.draw_connecting_lines or config.draw_spines):
+                x, y = final_x_y_coords(node)
+                write_text(node, x, y)
 
-        if config.prime_gaps is True and node.isprime is True:
+            if config.prime_gaps is True and node.isprime is True:
 
-            if config.save_prime_gaps is True:
-                # save the image of the prime gap
-                save(str(config.image_path) + str(most_recent_prime_node.number)
-                    + "-" + str(node.number) + ".png")
+                if config.reverse_display_order is False:
+                    sys.exit("ERROR: Cannot do prime_gaps = True and reverse_display_order = True at the same time.")
 
-            most_recent_prime_node = node
-            clear_background()
+                if config.save_prime_gaps is True:
+                    # save the image of the prime gap
+                    save(str(config.image_path) + str(most_recent_prime_node.number)
+                        + "-" + str(node.number) + ".png")
+
+                most_recent_prime_node = node
+                clear_background()
 
         return node
 
