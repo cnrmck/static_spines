@@ -18,6 +18,8 @@ class Config(object):
         # what color is the sky
         sky_color = 'blue'
         """
+        self.log_level = 'INFO'
+
         # the path to the location you want images (and other data) to be saved
         self.image_path = '/Users/Connor/code/static_spines/data/'
 
@@ -28,7 +30,7 @@ class Config(object):
 
         # if True saves having to redraw the image every time, but less beautiful
         # test this
-        self.reverse_display_order = False
+        self.reverse_display_order = True
         # clear the screen before every step
         self.clear_before_each_step = True
 

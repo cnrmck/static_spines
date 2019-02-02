@@ -14,7 +14,7 @@ from spine_class import SpinePoint
 from spatial_log import SpatialLog
 
 config = Config()
-sl = SpatialLog()
+sl = SpatialLog(log_level = config.log_level)
 
 
 # need to try higher bases than 2.
@@ -218,8 +218,8 @@ def plot_it(node):
     if config.write_text:
         if config.expansionary_plot is True:
             # TODO:
-            write_text(node, x_left + (expan_inc * numer), y_top
-                    + (expan_inc * node.number))
+            write_text(node, x_left + (expan_inc * numer), y_top)
+                    + (expan_inc * node.number)
         else:
             write_text(node, x + 5, y + 4)
 
@@ -270,8 +270,8 @@ def draw_node(prev_node, node):
 
                 if config.save_prime_gaps is True:
                     # save the image of the prime gap
-                    save(str(config.image_path) + str(most_recent_prime_node.number)
-                        + "-" + str(node.number) + ".png")
+                    save(str(config.image_path) + str(most_recent_prime_node.number))
+                        + "-" + str(node.number) + ".png"
 
                 most_recent_prime_node = node
                 clear_background()
@@ -343,8 +343,16 @@ def keyPressed():
                         node = SpinePoint(n, current_color)
                         data.nodes.appendleft(node)
 
-                    l.info("Drawing nodes in reverse up to: {}".format(n))
+                    l.info("Drawing nodes up to: {}".format(n))
                     prev_node = draw_nodes(prev_node, data)
+
+                elif config.reverse_display_order is True:
+                    for n in step:
+                        node = SpinePoint(n, current_color)
+                        data.nodes.append(node)
+
+                    l.info("Drawing nodes in reverse up to: {}".format(n))
+                    prev_node = draw_nodes(node, data)
 
 
             color_val += color_inc
