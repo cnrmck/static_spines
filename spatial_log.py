@@ -1,14 +1,14 @@
 import logging
 
 class SpatialLog():
-    def __init__(self, logger = None, ident_size = 4):
+    def __init__(self, logger = None, ident_size = 4, log_level = 'DEBUG'):
         """
         Args:
         ident_size -- the number of spaces to indent by
         """
         if logger is None:
             self.logger = logging.getLogger(__name__)
-            self.logger.setLevel(logging.getLevelName('DEBUG'))
+            self.logger.setLevel(logging.getLevelName(log_level))
         else:
             self.logger = logger
 
