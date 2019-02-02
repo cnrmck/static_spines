@@ -21,7 +21,9 @@ sl = SpatialLog()
 # need to figure out the translational properties of each spiney thing
 """
 Todos:
-
+1. Add a simple config file. DONE
+2. Add a better way to alternate between different functions. DONE
+3. Rotate the spine graph so it's the way you want it.
 """
 
 # defines large color_space to be the same as the HSL standard
@@ -343,9 +345,6 @@ def keyPressed():
 
                     l.info("Drawing nodes in reverse up to: {}".format(n))
                     prev_node = draw_nodes(prev_node, data)
-
-                elif config.reverse_display_order is False:
-
 
 
             color_val += color_inc
