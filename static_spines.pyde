@@ -21,9 +21,7 @@ sl = SpatialLog()
 # need to figure out the translational properties of each spiney thing
 """
 Todos:
-1. Add a simple config file. DONE
-2. Add a better way to alternate between different functions. DONE
-3. Rotate the spine graph so it's the way you want it.
+
 """
 
 # defines large color_space to be the same as the HSL standard
@@ -166,17 +164,20 @@ def get_updated_numer_and_denom(node):
     return numer, denom
 
 def write_text(node, x, y):
+    with sl as l:
 
-    fill(1, 1, 0)
-    textSize(10)
-    if config.write_text is True:
-        text(node.number, x+3, y-3)
+        fill(1, 1, 0)
+        textSize(10)
+        if config.write_text is True:
+            l.debug("Writing text for number {}".format(node.number))
+            text(node.number, x+3, y-3)
 
-    low, high = spine_math.yield_next_range((data.base**data.largest_order)-1)
-    node.update_fraction(high)
+        low, high = spine_math.yield_next_range((data.base**data.largest_order)-1)
+        node.update_fraction(high)
 
-    if config.write_fraction:
-        text(node.display_fraction, x + 15, y+5)
+        if config.write_fraction:
+            l.debug("Writing fraction {} for number {}".format(node.display_fraction, node.number))
+            text(node.display_fraction, x + 15, y+5)
 
 def plot_it(node):
     y_top = data.center_y - config.scale_factor
@@ -342,6 +343,10 @@ def keyPressed():
 
                     l.info("Drawing nodes in reverse up to: {}".format(n))
                     prev_node = draw_nodes(prev_node, data)
+
+                elif config.reverse_display_order is False:
+
+
 
             color_val += color_inc
             data.largest_order += 1

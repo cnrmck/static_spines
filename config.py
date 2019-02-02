@@ -28,7 +28,9 @@ class Config(object):
 
         # if True saves having to redraw the image every time, but less beautiful
         # test this
-        self.reverse_display_order = False
+        self.reverse_display_order = True
+        # clear the screen before every step
+        self.clear_before_each_step = False
 
         # the width of the canvas
         self.canvas_width = 1000
@@ -41,21 +43,18 @@ class Config(object):
 
         # if True the next display will be range(n^exp - n^(exp - 1), n^(exp))
         # if False the next step will be the next number
-        self.step_by_exponential_range = True
-
-        # clear the screen before every step
-        self.clear_before_each_step = True
+        self.step_by_exponential_range = False
 
         self.color_primes = True
 
-        self.prime_gaps = True
+        self.prime_gaps = False
         # save prime gaps
         self.save_prime_gaps = True
 
         # writes the number associated with the each SpinePoint
-        self.write_text = True
+        self.write_text = False
         # writes the fraction associated with the each SpinePoint
-        self.write_fraction = True
+        self.write_fraction = False
 
         # draw spines as long as their number (if 5 spine is 5 units long)
         self.spine_length_is_its_number = False
@@ -84,3 +83,12 @@ class Config(object):
         self.expansionary_plot = False
         # how many units to step by for each increment (in expansionary_plot)
         self.expansion_increment = 2
+
+        self.config_tests()
+
+    def config_tests(self):
+        """
+        Some simple tests that you can run to find out whether you have any undesireable config settings
+        """
+        if self.reverse_display_order is True and self.clear_before_each_step is True:
+            print("reverse_display_order and clear_before_each_step don't play nicely together.")
