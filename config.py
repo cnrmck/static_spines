@@ -18,7 +18,7 @@ class Config(object):
         # what color is the sky
         sky_color = 'blue'
         """
-        self.log_level = 'CRITICAL'
+        self.log_level = 'DEBUG'
 
         # the path to the location you want images (and other data) to be saved
         self.image_path = '/Users/Connor/code/static_spines/data/'
@@ -26,7 +26,7 @@ class Config(object):
         # specifies the number of colors to color exponents with
         self.num_colors = 18
 
-        self.base = 2
+        self.base = 3
 
         # if True saves having to redraw the image every time, but less beautiful
         # test this
@@ -55,7 +55,7 @@ class Config(object):
         self.save_prime_gaps = True
 
         # writes the number associated with the each SpinePoint
-        self.write_text = False
+        self.write_text = True
         # writes the fraction associated with the each SpinePoint
         self.write_fraction = False
 

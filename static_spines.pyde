@@ -173,7 +173,7 @@ def draw_spines(node):
     line(data.center_x, data.center_y, x, y)
 
 def get_updated_numer_and_denom(node):
-    low, high = spine_math.yield_next_range((data.base**data.largest_order)-1)
+    low, high = spine_math.yield_next_range((data.base**data.largest_order)-1, base = config.base)
     node.update_fraction(high)
     numer, denom = node.get_numer_and_denom()
 
@@ -188,7 +188,7 @@ def write_text(node, x, y):
             l.debug("Writing text for number {}".format(node.number))
             text(node.number, x+3, y-3)
 
-        low, high = spine_math.yield_next_range((data.base**data.largest_order)-1)
+        low, high = spine_math.yield_next_range((data.base**data.largest_order)-1, base = config.base)
         node.update_fraction(high)
 
         if config.write_fraction:
@@ -336,7 +336,7 @@ def keyPressed():
 
             if config.step_by_exponential_range is True:
                 l.info("Stepping exponentially")
-                low, high = spine_math.yield_next_range(high)
+                low, high = spine_math.yield_next_range(high, base = config.base)
                 with sl as l:
                     step = range(low, high)
                     l.debug("Next step is {}-{} with len {}".format(low, high, len(step)))
