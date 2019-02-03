@@ -32,7 +32,9 @@ class Config(object):
         # test this
         self.reverse_display_order = True
         # clear the screen before every step
-        self.clear_before_each_step = True
+        self.clear_before_each_step = False
+        # if True, don't draw all nodes at once, just draw one at a time
+        self.draw_individually = True
 
         # the width of the canvas
         self.canvas_width = 1000
@@ -45,7 +47,7 @@ class Config(object):
 
         # if True the next display will be range(n^exp - n^(exp - 1), n^(exp))
         # if False the next step will be the next number
-        self.step_by_exponential_range = True
+        self.step_by_exponential_range = False
 
         self.color_primes = True
 

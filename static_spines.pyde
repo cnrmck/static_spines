@@ -300,6 +300,7 @@ def draw_nodes(start_node, data):
             l.debug("Drawing node {}".format(node.number))
             prev_node = draw_node(prev_node, node)
 
+    # should this be returning node or prev_node?
     return node
 
 def clear_background():
@@ -353,23 +354,32 @@ def keyPressed():
                     step = range(low, high)
                     l.debug("Next step is {}-{} with len {}".format(low, high, len(step)))
 
-            l.info("Drawing All Nodes")
             with sl as l:
-                if config.reverse_display_order is False:
+                if config.draw_individually is False:
+                    l.info("Drawing All Nodes")
+                    if config.reverse_display_order is False:
+                        for n in step:
+                            node = SpinePoint(n, current_color)
+                            data.nodes.appendleft(node)
+
+                        l.info("Drawing nodes up to: {}".format(n))
+                        prev_node = draw_nodes(prev_node, data)
+
+                    elif config.reverse_display_order is True:
+                        for n in step:
+                            node = SpinePoint(n, current_color)
+                            data.nodes.append(node)
+
+                        l.info("Drawing nodes in reverse up to: {}".format(n))
+                        prev_node = draw_nodes(node, data)
+
+                else:
+                    l.info("Drawing step individually")
                     for n in step:
                         node = SpinePoint(n, current_color)
-                        data.nodes.appendleft(node)
+                        prev_node = draw_node(prev_node, node)
 
-                    l.info("Drawing nodes up to: {}".format(n))
-                    prev_node = draw_nodes(prev_node, data)
 
-                elif config.reverse_display_order is True:
-                    for n in step:
-                        node = SpinePoint(n, current_color)
-                        data.nodes.append(node)
-
-                    l.info("Drawing nodes in reverse up to: {}".format(n))
-                    prev_node = draw_nodes(node, data)
 
 
             color_val += color_inc
