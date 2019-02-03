@@ -114,14 +114,28 @@ def connect_nodes(start_node, end_node):
         x2, y2 = final_x_y_coords(end_node)
 
         if config.offset_connecting_lines is True:
-            # calculate the offset for start_node to make it easier to determine direction
+            # calculate the offset for start_node to make it easier to determine direction visually
+            # TODO: Make this work, right now it's trash
             prev_node_offset_x, prev_node_offset_y = calc_offset(start_node, end_node)
             line(prev_node_offset_x, prev_node_offset_y, end_node.x, end_node.y)
         else:
+            # Connects nodes directly to each other
             line(x1, y1, x2, y2)
 
-        if config.draw_nodes:
-            ellipse(x1, y1, 5, 5)
+def draw_spine_point(node):
+  if config.color_primes == True and node.isprime == True:
+      dot_color = node.current_color
+  else:
+      dot_color = color(0, 0, 0, 80)
+
+  if config.only_indicate_primes is True and node.isprime == False:
+      # if you are only indicating primes, and this one isn't prime, do nothing
+      pass
+
+  else:
+      x, y = final_x_y_coords(node)
+      fill(dot_color)
+      ellipse(x, y, 5, 5)
 
 def final_x_y_coords(node):
     """
@@ -258,6 +272,9 @@ def draw_node(prev_node, node):
                 else:
                     connect_nodes(prev_node, node)
 
+            if config.indicate_end_of_spine:
+                draw_spine_point(node)
+
             if config.write_text and (config.draw_connecting_lines or config.draw_spines):
                 x, y = final_x_y_coords(node)
                 write_text(node, x, y)
@@ -312,6 +329,7 @@ def keyPressed():
             current_color = get_current_color(color_val)
 
             if config.clear_before_each_step is True:
+                l.info("Clearing background")
                 clear_background()
 
             if config.step_by_exponential_range is True:
@@ -320,6 +338,7 @@ def keyPressed():
                 with sl as l:
                     step = range(low, high)
                     l.debug("Next step is {}-{} with len {}".format(low, high, len(step)))
+                data.largest_order += 1
 
             else:
                 l.info("Stepping linearly")
@@ -334,7 +353,7 @@ def keyPressed():
                     step = range(low, high)
                     l.debug("Next step is {}-{} with len {}".format(low, high, len(step)))
 
-            l.info("Drawing Nodes")
+            l.info("Drawing All Nodes")
             with sl as l:
                 if config.reverse_display_order is False:
                     for n in step:
@@ -354,7 +373,6 @@ def keyPressed():
 
 
             color_val += color_inc
-            data.largest_order += 1
             l.info("Done")
 
 
