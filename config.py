@@ -18,7 +18,7 @@ class Config(object):
         # what color is the sky
         sky_color = 'blue'
         """
-        self.log_level = 'INFO'
+        self.log_level = 'DEBUG'
 
         # the path to the location you want images (and other data) to be saved
         self.image_path = '/Users/Connor/code/static_spines/data/'
@@ -60,8 +60,6 @@ class Config(object):
 
         # draw spines as long as their number (if 5 spine is 5 units long)
         self.spine_length_is_its_number = False
-        # draw the connecting lines
-        self.draw_connecting_lines = True
         # TODO: Make this work
         # draw the connecting lines with an offset
         self.offset_connecting_lines = False
@@ -69,12 +67,14 @@ class Config(object):
         self.connections_in_current_color = True
 
         # draw the spines
-        self.draw_spines = True
-        # draws shadows for the lines
+        self.draw_spines = False
+        # draws shadows for the spines
         self.draw_shadows = False
-
-        # draw points to indicate each node
-        self.draw_nodes = True
+        # draw the connecting lines
+        self.draw_connecting_lines = True
+        # draw points at the end of each
+        self.indicate_end_of_spine = True
+        self.only_indicate_primes = True
 
         # if not using spine_length_is_its_number, should be < canvas_height/2
         self.scale_factor = 490
@@ -92,5 +92,9 @@ class Config(object):
         """
         Some simple tests that you can run to find out whether you have any undesireable config settings
         """
-        if self.reverse_display_order is True and self.clear_before_each_step is True:
-            print("reverse_display_order and clear_before_each_step don't play nicely together.")
+        if self.only_indicate_primes == True and self.indicate_end_of_spine == False:
+            print("CONFIG WARNING: Cannot indicate primes if spine indication is false."
+            "\n    Change indicate_end_of_spine to True")
+
+        if self.offset_connecting_lines is True:
+            print("CONFIG WARNING: offsetting connecting lines doesn't work. Change so that offset_connecting_lines = False")
