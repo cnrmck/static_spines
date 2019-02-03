@@ -26,7 +26,7 @@ class Config(object):
         # specifies the number of colors to color exponents with
         self.num_colors = 18
 
-        self.base = 3
+        self.base = 2
 
         # if True saves having to redraw the image every time, but less beautiful
         # test this
@@ -60,7 +60,7 @@ class Config(object):
         self.write_fraction = False
 
         # draw spines as long as their number (if 5 spine is 5 units long)
-        self.spine_length_is_its_number = False
+        self.spine_length_is_its_number = True
         # TODO: Make this work
         # draw the connecting lines with an offset
         self.offset_connecting_lines = False
@@ -68,11 +68,11 @@ class Config(object):
         self.connections_in_current_color = True
 
         # draw the spines
-        self.draw_spines = False
+        self.draw_spines = True
         # draws shadows for the spines
         self.draw_shadows = False
         # draw the connecting lines
-        self.draw_connecting_lines = True
+        self.draw_connecting_lines = False
         # draw points at the end of each
         self.indicate_end_of_spine = False
         self.only_indicate_primes = False
