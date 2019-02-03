@@ -301,7 +301,7 @@ def draw_nodes(start_node, data):
             prev_node = draw_node(prev_node, node)
 
     # should this be returning node or prev_node?
-    return node
+    return prev_node
 
 def clear_background():
     background(0, 0, 99)
