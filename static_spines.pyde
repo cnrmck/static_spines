@@ -218,8 +218,7 @@ def plot_it(node):
     if config.write_text:
         if config.expansionary_plot is True:
             # TODO:
-            write_text(node, x_left + (expan_inc * numer), y_top)
-                    + (expan_inc * node.number)
+            write_text(node, x_left + (expan_inc * numer), y_top) + (expan_inc * node.number)
         else:
             write_text(node, x + 5, y + 4)
 
@@ -270,8 +269,7 @@ def draw_node(prev_node, node):
 
                 if config.save_prime_gaps is True:
                     # save the image of the prime gap
-                    save(str(config.image_path) + str(most_recent_prime_node.number))
-                        + "-" + str(node.number) + ".png"
+                    save(str(config.image_path) + str(most_recent_prime_node.number)) + "-" + str(node.number) + ".png"
 
                 most_recent_prime_node = node
                 clear_background()
