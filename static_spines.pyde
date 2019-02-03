@@ -249,7 +249,6 @@ def draw_node(prev_node, node):
     """
     with sl as l:
         global most_recent_prime_node
-        l.debug("Most recent prime node is: {}".format(most_recent_prime_node.number))
 
         if config.cartesian_plot is True:
             with sl as l:
@@ -266,7 +265,8 @@ def draw_node(prev_node, node):
                 l.debug('Drawing spine for node {}'.format(node.number))
                 draw_spines(node)
 
-            if prev_node and config.draw_connecting_lines:
+            # the difference between node numbers is to make sure we aren't connecting nodes that shouldn't be
+            if prev_node and config.draw_connecting_lines and (abs(node.number - prev_node.number) == 1):
                 if not config.reverse_display_order:
                     connect_nodes(node, prev_node)
                 else:
@@ -280,6 +280,7 @@ def draw_node(prev_node, node):
                 write_text(node, x, y)
 
             if config.prime_gaps is True and node.isprime is True:
+                l.debug("Most recent prime node is: {}".format(most_recent_prime_node.number))
 
                 if config.reverse_display_order is False:
                     sys.exit("ERROR: Cannot do prime_gaps = True and reverse_display_order = True at the same time.")
